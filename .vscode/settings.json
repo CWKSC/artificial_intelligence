@@ -1,5 +1,6 @@
 {
     "python.analysis.extraPaths": [
-        "data_processing"
+        "data_processing",
+        "artificial_neural_network"
     ]
 }

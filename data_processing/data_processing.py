@@ -1,4 +1,8 @@
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
+import traceback
+from typing import Any
+import numpy
 import pandas as pd
 from torchtext.vocab import build_vocab_from_iterator
 import torch
@@ -17,20 +21,26 @@ class VocabEncode(Operation):
     def operate(self, series: pd.Series) -> pd.Series:
         series_list = series.apply(str).tolist()
         vocab = build_vocab_from_iterator([series_list])
-        print('Vocab:', ', '.join(vocab.get_itos()))
+        itos = vocab.get_itos()
+        if len(itos) > 10:
+            print('Vocab:', ', '.join(itos[:10]))
+        else:
+            print('Vocab:', ', '.join(itos))
         encoded = vocab(series_list)
         return pd.Series(encoded)
 
-class Map(Operation):
-    def __init__(self, mappingTable: dict[str, str]) -> None:
+class Replace(Operation):
+    def __init__(self, mappingTable: dict[str, Any]) -> None:
         super().__init__()
         self.mappingTable = mappingTable
     def name(self) -> str:
-        return 'Map'
+        return 'Replace'
     def operate(self, series: pd.Series) -> pd.Series:
-        series_list = series.apply(str).tolist()
+        series_str = series.apply(str)
         print(', '.join([f'{key} -> {value}' for key, value in self.mappingTable.items()]))
-        return pd.Series(series_list).map(self.mappingTable)
+        for key, value in self.mappingTable.items():
+            series_str.replace(key, value, inplace=True)
+        return series_str
 
 class Apply(Operation):
     def __init__(self, func) -> None:
@@ -39,8 +49,7 @@ class Apply(Operation):
     def name(self) -> str:
         return 'Apply'
     def operate(self, series: pd.Series) -> pd.Series:
-        series_list = series.apply(str).tolist()
-        return pd.Series(series_list).apply(self.func)
+        return series.apply(str).apply(self.func)
 
 class FillNa(Operation):
     def __init__(self, value) -> None:
@@ -59,6 +68,9 @@ def init(file_path: str):
     global current_file_directory
     current_file_directory = Path(file_path).parent
 
+def analysis_gui(dataframe: pd.DataFrame):
+    pass
+
 def analysis(dataframe: pd.DataFrame):
     print()
     print("Columns:")
@@ -72,7 +84,6 @@ def analysis(dataframe: pd.DataFrame):
     # Unique
     for column_name in dataframe:
         series = dataframe[column_name]
-        series_na = series.isna()
         if series.is_unique:
             print(f'{column_name: <{padding}} is unique')
         elif series[series != pd.NA].is_unique:
@@ -82,19 +93,66 @@ def analysis(dataframe: pd.DataFrame):
             idmax = value_counts.idxmax()
             print(f'{column_name: <{padding}} is not unique, "{idmax}" repeated {value_counts[idmax]} times')
     print()
+
     # Missing value
     for column_name in dataframe:
         series = dataframe[column_name]
-        series_na = series.isna()
-        if series_na.any():
-            print(f'{column_name: <{padding}} have {series_na.sum()} missing value')
+        series_isna = series.isna()
+        if series_isna.any():
+            series_na = series_isna[series_isna == True]
+            print(f'{column_name: <{padding}} have {series_isna.sum()} missing value, first one in {series_na.first_valid_index()}')
     print()
 
-def read_csv(path: str) -> pd.DataFrame:
-    return pd.read_csv(current_file_directory / (path + ".csv"))
+    print('Template:')
+    print('temp_df = dp.read_csv(\'data/temp\')')
+    print('')
+    print('dp.transform(')
+    print('    temp_df,')
+    for column_name in dataframe:
+        series = dataframe[column_name]
+        if series.is_unique:
+            continue
+        
+        display_str = ""
+        column_name_quote = f'\'{column_name}\''
+        display_str += f'    ({column_name_quote: <{padding}}'
 
-def save_csv(dataframe: pd.DataFrame, path: str) -> None:
-    dataframe.to_csv(current_file_directory / (path + ".csv"), index=False)
+        series_dropna = series.dropna()
+        cell = series_dropna[0]
+        cell_type = type(cell)
+        # print(cell_type)
+
+        is_bool = cell_type == bool or cell_type == numpy.bool_
+        is_float = cell_type == numpy.float64
+        is_str = cell_type == str
+        is_unique = series.is_unique
+        have_na = series.isna().any()
+
+        if have_na:
+            if is_float or is_bool:
+                display_str += ', dp.FillNa(-1)'
+        if is_bool:
+            display_str += ', dp.Map({\'True\': 1, \'False\': 0})'
+        if (not is_unique) and is_str:
+            display_str += ', dp.VocabEncode()'
+        
+        display_str += '),'
+        print(display_str)
+    print(')')
+    print('dp.transformAll(temp_df, except_columns = [], dp.Apply(float))')
+    print('dp.save_df_to_csv(temp_df, \'processed/temp\')')
+
+
+
+def read_csv(path: str) -> pd.DataFrame:
+    path : Path = current_file_directory / (path + ".csv")
+    return pd.read_csv(path)
+
+def save_df_to_csv(dataframe: pd.DataFrame, path: str) -> None:
+    filepath = current_file_directory / (path + ".csv")
+    directory = filepath.parent
+    directory.mkdir(parents=True, exist_ok=True)
+    dataframe.to_csv(filepath, index=False)
 
 def transform(dataframe: pd.DataFrame, *process_chains: tuple[tuple[str, list[Operation]]]):
     for process_chain in process_chains:
@@ -115,20 +173,33 @@ def transform(dataframe: pd.DataFrame, *process_chains: tuple[tuple[str, list[Op
             if type(operation) is Drop:
                 is_drop = True
                 dataframe.drop(columns=[column_name], inplace=True)
+                break
             series = operation.operate(series)
-        
+
         if not is_drop:
             dataframe[column_name] = series
         
         print()
 
 
-def transformAll(dataframe: pd.DataFrame, *operations: tuple[Operation]):
+def transformAll(dataframe: pd.DataFrame, except_columns: list[str] = [], *operations: tuple[Operation]):
     for column_name in dataframe:
-        series = dataframe[column_name]
-        for operation in operations:
-            series = operation.operate(series)
-        dataframe[column_name] = series
+        if column_name in except_columns:
+            continue
+        try:
+            series = dataframe[column_name]
+            for operation in operations:
+                series = operation.operate(series)
+            dataframe[column_name] = series
+        except Exception as e:
+            traceback.print_exc()
+            print("Error in column: ", column_name)
 
-def toTensors(dataframe: pd.DataFrame) -> list[torch.Tensor]:
+def toTensors(dataframe: pd.DataFrame) -> torch.Tensor:
     return torch.Tensor(dataframe.to_numpy())
+
+
+def spilt_df(dataframe: pd.DataFrame, columns=[]) -> tuple[ pd.DataFrame, pd.DataFrame]:
+    df1 = dataframe[columns]
+    df2 = dataframe.drop(columns=columns)
+    return df1, df2

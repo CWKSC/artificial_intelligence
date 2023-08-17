@@ -10,6 +10,7 @@ pip install torchtext
 pip install spacy
 pip install portalocker
 pip install seaborn
+pip install scikit-learn
 
 ./install.ps1
 
