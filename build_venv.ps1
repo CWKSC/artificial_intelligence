@@ -11,6 +11,9 @@ pip install spacy
 pip install portalocker
 pip install seaborn
 pip install scikit-learn
+pip install scikit-optimize
+pip install lightgbm
+pip install ray[tune]
 
 ./install.ps1
 

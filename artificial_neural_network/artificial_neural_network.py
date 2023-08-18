@@ -18,15 +18,16 @@ def init(file_path: str):
 
 
 def train(
+    model: torch.nn.Module,
     target_tensors: torch.Tensor, 
     input_tensors: torch.Tensor, 
-    model: torch.nn.Module,
-    repeat: int = 100,
+    repeat: int = 10000,
     loss_fn = torch.nn.BCEWithLogitsLoss(), 
     optimizer = None,
     correct_func: Callable[[torch.Tensor, torch.Tensor], bool] = lambda pred, target: pred == target,
     save_mode: Union[Literal['accuracy'], Literal['loss'], None] = "accuracy",
-    save_dir_path: str = 'model'
+    save_dir_path: str = 'model',
+    save_file_name: str = 'NN'
 ) -> None:
     try:
         if save_mode != None:
@@ -35,7 +36,7 @@ def train(
         
         if optimizer == None:
             optimizer = torch.optim.RAdam(model.parameters())
-        
+            
         model.to(device)
         model.train()
 
@@ -68,13 +69,13 @@ def train(
             if total_loss < best_loss:
                 best_loss = total_loss
                 if save_mode == 'accuracy':
-                    torch.save(model.state_dict(), directory / 'NN.pt')
+                    torch.save(model.state_dict(), directory / f'{save_file_name}.pt')
             
             accuracy = total_correct / tensor_len
             if accuracy > best_accuracy:
                 best_accuracy = accuracy
                 if save_mode == 'loss':
-                    torch.save(model.state_dict(), directory / 'NN.pt')
+                    torch.save(model.state_dict(), directory / f'{save_file_name}.pt')
 
             print(f"loss:     {total_loss:>7f}, best_loss: {best_loss:>7f}")
             print(f"accuracy: {accuracy:>7f}, {total_correct} / {tensor_len}, best_accuracy: {best_accuracy:>7f}")
@@ -82,9 +83,9 @@ def train(
         pass
 
 def eval(
+    model: torch.nn.Module,
     target_tensors: torch.Tensor, 
     input_tensors: torch.Tensor, 
-    model: torch.nn.Module,
     loss_fn = torch.nn.BCEWithLogitsLoss(), 
     optimizer = None,
     correct_func: Callable[[torch.Tensor, torch.Tensor], bool] = lambda pred, target: pred == target
@@ -114,8 +115,8 @@ def eval(
     print(f"accuracy: {total_correct / tensor_len}, {total_correct} / {tensor_len}")
 
 def predict(
-    input_tensors: torch.Tensor, 
     model: torch.nn.Module,
+    input_tensors: torch.Tensor, 
 ) -> list[torch.Tensor]:
     model.to(device)
     model.eval()
@@ -126,3 +127,17 @@ def predict(
             predict = model(input)
             predict_list.append(predict)
     return predict_list
+
+def load_model(model: torch.nn.Module, file_path: str) -> torch.nn.Module:
+    state_dict = torch.load(current_file_directory / (file_path + '.pt'))
+    model.load_state_dict(state_dict)
+    model.to(device)
+    model.eval()
+    return model
+
+
+def compare_float_true_false(pred, target):
+    pred = pred.item()
+    target = target.item()
+    pred = 1 if pred > 0.5 else 0
+    return pred == target

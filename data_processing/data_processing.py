@@ -27,7 +27,10 @@ class VocabEncode(Operation):
         else:
             print('Vocab:', ', '.join(itos))
         encoded = vocab(series_list)
-        return pd.Series(encoded)
+        print(encoded[:20])
+        output = pd.Series(encoded)
+        # print(output)
+        return output
 
 class Replace(Operation):
     def __init__(self, mappingTable: dict[str, Any]) -> None:
@@ -60,6 +63,27 @@ class FillNa(Operation):
     def operate(self, series: pd.Series) -> pd.Series:
         return series.fillna(self.value)
 
+class FillNaWithMean(Operation):
+    def __init__(self) -> None:
+        super().__init__()
+    def name(self) -> str:
+        return 'FillNaWithMean'
+    def operate(self, series: pd.Series) -> pd.Series:
+        mean = series.dropna().mean()
+        print(f'Mode: {mean}')
+        return series.fillna(mean)
+
+class FillNaWithMode(Operation):
+    def __init__(self) -> None:
+        super().__init__()
+    def name(self) -> str:
+        return 'FillNaWithMode'
+    def operate(self, series: pd.Series) -> pd.Series:
+        mode = series.dropna().mode()
+        print(f'Mode: {mode}')
+        return series.fillna(mode)
+
+
 class Drop(Operation):
     def name(self) -> str:
         return 'Drop'
@@ -73,10 +97,11 @@ def analysis_gui(dataframe: pd.DataFrame):
 
 def analysis(dataframe: pd.DataFrame):
     print()
-    print("Columns:")
+    print(f"{ dataframe.shape[1] } Columns, {dataframe.shape[0]} Row")
     column_names = dataframe.columns.tolist()
     print(column_names)
-    print("Number of row:", dataframe.count().max())
+    print()
+    print(dataframe.head(10))
     print()
 
     padding = max(map(len, column_names)) + 4
@@ -110,15 +135,13 @@ def analysis(dataframe: pd.DataFrame):
     print('    temp_df,')
     for column_name in dataframe:
         series = dataframe[column_name]
-        if series.is_unique:
-            continue
-        
+
         display_str = ""
         column_name_quote = f'\'{column_name}\''
         display_str += f'    ({column_name_quote: <{padding}}'
 
         series_dropna = series.dropna()
-        cell = series_dropna[0]
+        cell = series_dropna[series_dropna.first_valid_index()]
         cell_type = type(cell)
         # print(cell_type)
 
@@ -139,9 +162,10 @@ def analysis(dataframe: pd.DataFrame):
         display_str += '),'
         print(display_str)
     print(')')
-    print('dp.transformAll(temp_df, except_columns = [], dp.Apply(float))')
+    print('dp.transformAll(temp_df, dp.Apply(float), except_columns = [])')
     print('dp.save_df_to_csv(temp_df, \'processed/temp\')')
-
+    print()
+    
 
 
 def read_csv(path: str) -> pd.DataFrame:
@@ -175,14 +199,16 @@ def transform(dataframe: pd.DataFrame, *process_chains: tuple[tuple[str, list[Op
                 dataframe.drop(columns=[column_name], inplace=True)
                 break
             series = operation.operate(series)
+            # print(series)
 
         if not is_drop:
-            dataframe[column_name] = series
+            dataframe[column_name] = series.tolist()
+            # print(dataframe)
         
         print()
 
 
-def transformAll(dataframe: pd.DataFrame, except_columns: list[str] = [], *operations: tuple[Operation]):
+def transformAll(dataframe: pd.DataFrame, *operations: tuple[Operation], except_columns: list[str] = []):
     for column_name in dataframe:
         if column_name in except_columns:
             continue
@@ -199,7 +225,16 @@ def toTensors(dataframe: pd.DataFrame) -> torch.Tensor:
     return torch.Tensor(dataframe.to_numpy())
 
 
-def spilt_df(dataframe: pd.DataFrame, columns=[]) -> tuple[ pd.DataFrame, pd.DataFrame]:
+def spilt_df(dataframe: pd.DataFrame, columns: list[str] = []) -> tuple[ pd.DataFrame, pd.DataFrame]:
     df1 = dataframe[columns]
     df2 = dataframe.drop(columns=columns)
     return df1, df2
+
+def spiltN_df(dataframe: pd.DataFrame, columns_list: list[list[str]]=[]) -> list[pd.DataFrame]:
+    df_list = []
+    temp_df = dataframe.copy()
+    for columns in columns_list:
+        df_list.append(dataframe[columns])
+        temp_df = temp_df.drop(columns=columns)
+    df_list.append(temp_df)
+    return df_list
