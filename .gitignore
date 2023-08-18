@@ -154,3 +154,4 @@ cython_debug/
 *.pt
 **/processed/
 **/submission/
+**/catboost_info/
