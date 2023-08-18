@@ -2,5 +2,9 @@
     "python.analysis.extraPaths": [
         "data_processing",
         "artificial_neural_network"
-    ]
+    ],
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/**.egg-info": true
+    }
 }
