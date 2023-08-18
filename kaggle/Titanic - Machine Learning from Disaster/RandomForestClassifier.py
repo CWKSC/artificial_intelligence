@@ -1,7 +1,5 @@
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 import data_processing as dp
-import pandas as pd
 dp.init(__file__)
 
 target_df = dp.read_csv("processed/train_target")
@@ -17,4 +15,5 @@ predictions = model.predict(test_input_df)
 
 test_target_df['Survived'] = predictions.astype(int)
 print(test_target_df['Survived'].value_counts())
+
 dp.save_df_to_csv(test_target_df, "submission/RandomForestClassifier")

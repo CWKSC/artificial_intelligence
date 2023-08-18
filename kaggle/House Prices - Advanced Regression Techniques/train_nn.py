@@ -19,6 +19,6 @@ ann.train(
     model,
     target_tensors,
     input_tensors,
-    correct_func=ann.compare_float_true_false,
+    correct_func=ann.compare_float_isclose,
     save_file_name='NN'
 )

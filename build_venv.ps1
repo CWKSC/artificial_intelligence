@@ -14,6 +14,8 @@ pip install scikit-learn
 pip install scikit-optimize
 pip install lightgbm
 pip install ray[tune]
+pip install catboost
+pip install ngboost
 
 ./install.ps1
 

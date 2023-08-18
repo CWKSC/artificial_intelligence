@@ -141,3 +141,8 @@ def compare_float_true_false(pred, target):
     target = target.item()
     pred = 1 if pred > 0.5 else 0
     return pred == target
+
+def compare_float_isclose(pred, target):
+    pred = pred.item()
+    target = target.item()
+    return numpy.isclose(pred, target)
