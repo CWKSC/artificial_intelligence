@@ -37,6 +37,10 @@ dp.transform(
     ('FirstName'     , dp.VocabEncode()),
     ('LastName'      , dp.VocabEncode())
 )
-dp.transformAll(train_df, [], dp.Apply(float))
+dp.transformAll(train_df, dp.Apply(float), except_columns = [])
 dp.analysis(train_df)
-dp.save_df_to_csv(train_df, 'processed/train')
+
+target_df, input_df = dp.spilt_df(train_df, columns = ['Transported'])
+dp.save_df_to_csv(target_df, 'processed/train_target')
+dp.save_df_to_csv(input_df, 'processed/train_input')
+

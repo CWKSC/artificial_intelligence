@@ -13,4 +13,4 @@ predictions = model.predict(test_input_df)
 
 test_target_df['SalePrice'] = predictions
 print(test_target_df['SalePrice'].value_counts())
-dp.save_df_to_csv(test_target_df, "submission/CatBoostRegressor")
+dp.save_df_to_csv(test_target_df, "submission/NGBRegressor")

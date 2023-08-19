@@ -155,3 +155,5 @@ cython_debug/
 **/processed/
 **/submission/
 **/catboost_info/
+**/vinai/
+kaggle/Store Sales - Time Series Forecasting/data/train.csv

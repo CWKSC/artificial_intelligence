@@ -22,14 +22,13 @@ class VocabEncode(Operation):
         series_list = series.apply(str).tolist()
         vocab = build_vocab_from_iterator([series_list])
         itos = vocab.get_itos()
-        if len(itos) > 10:
-            print('Vocab:', ', '.join(itos[:10]))
+        display_str = ', '.join(itos[:10])
+        if len(display_str) > 100:
+            print('Vocab:', display_str[:100], '...')
         else:
-            print('Vocab:', ', '.join(itos))
+            print('Vocab:', display_str)
         encoded = vocab(series_list)
-        print(encoded[:20])
         output = pd.Series(encoded)
-        # print(output)
         return output
 
 class Replace(Operation):
@@ -159,7 +158,7 @@ def analysis(dataframe: pd.DataFrame):
             if is_float or is_bool:
                 display_str += ', dp.FillNa(-1)'
         if is_bool:
-            display_str += ', dp.Map({\'True\': 1, \'False\': 0})'
+            display_str += ', dp.Replace({\'True\': 1, \'False\': 0})'
         if (not is_unique) and is_str:
             display_str += ', dp.VocabEncode()'
         
@@ -175,8 +174,6 @@ def analysis(dataframe: pd.DataFrame):
     print('dp.analysis(temp_df)')
     print('print(temp_target_df.head(10))')
     print('print(temp_input_df.head(10))')
-    print()
-    print('dp.save_df_to_csv(temp_df, \'processed/temp\')')
     print()
     
 
@@ -194,7 +191,6 @@ def save_df_to_csv(dataframe: pd.DataFrame, path: str) -> None:
 def transform(dataframe: pd.DataFrame, *process_chains: tuple[tuple[str, list[Operation]]]):
     for process_chain in process_chains:
         if type(process_chain) != tuple:
-            print("[Warning] process_chain not a tuple")
             continue
 
         column_name, *operations = process_chain

@@ -97,5 +97,3 @@ dp.save_df_to_csv(train_input_df, 'processed/train_input')
 dp.analysis(train_df)
 print(train_target_df.head(10))
 print(train_input_df.head(10))
-
-dp.save_df_to_csv(train_df, 'processed/train')
