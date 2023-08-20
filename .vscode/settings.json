@@ -1,7 +1,11 @@
 {
     "python.analysis.extraPaths": [
+        "artificial_neural_network",
+        "classification",
+        "data_analysis",
         "data_processing",
-        "artificial_neural_network"
+        "regression",
+        "transformer"
     ],
     "files.exclude": {
         "**/__pycache__": true,

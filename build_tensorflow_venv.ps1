@@ -6,7 +6,7 @@ python -m pip install --upgrade pip
 ./install_common.ps1
 
 pip install tensorflow
-pip install protobuf=4.20
+pip install protobuf
 pip install tensorflow_datasets
 pip install tensorflow-text
 
