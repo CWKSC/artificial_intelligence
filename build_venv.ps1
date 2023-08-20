@@ -9,7 +9,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 pip install torchdata
 pip install torchtext
 
-./install.ps1
+./install_custom_library.ps1
 
 pause
 deactivate

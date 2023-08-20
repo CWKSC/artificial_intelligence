@@ -10,7 +10,7 @@ pip install protobuf=4.20
 pip install tensorflow_datasets
 pip install tensorflow-text
 
-./install.ps1
+./install_custom_library.ps1
 
 pause
 deactivate

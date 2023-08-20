@@ -1,4 +1,4 @@
-# data_processing
+# artificial_intelligence
 
 ### Build venv
 
