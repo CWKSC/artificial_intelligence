@@ -7,7 +7,13 @@ input_df = dp.read_csv("processed/train_input")
 test_input_df = dp.read_csv("processed/test_input")
 test_target_df = dp.read_csv("processed/test_target")
 
-model = CatBoostClassifier()
+# 250 0.001 -> 0.78676
+# 500 0.001 -> 0.78933
+
+model = CatBoostClassifier(
+    iterations=375,
+    learning_rate=0.001
+)
 model.fit(input_df, target_df.to_numpy().ravel())
 print(model.score(input_df, target_df))
 

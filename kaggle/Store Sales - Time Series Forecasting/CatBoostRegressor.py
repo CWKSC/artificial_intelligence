@@ -9,8 +9,15 @@ input_df = dp.read_csv("processed/train_input")
 test_input_df = dp.read_csv("processed/test_input")
 test_target_df = dp.read_csv("processed/test_target")
 
+# 1024 0.001 -> 2.95972
+# 1024 0.002 -> 2.63696
+# 1024 0.008 -> 1.65781
+# 1024 0.016 -> 1.54868
+# 1024 0.016 -> 1.59305
+
 model = CatBoostRegressor(
-    learning_rate=0.01,
+    iterations=2048,
+    learning_rate=0.016,
     verbose=10
 )
 model.fit(input_df, target_df.to_numpy().ravel())

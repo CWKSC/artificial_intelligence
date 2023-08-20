@@ -7,7 +7,16 @@ target_df = dp.read_csv("processed/train_target")
 test_input_df = dp.read_csv("processed/test_input_importance")
 test_target_df = dp.read_csv("processed/test_target")
 
-model = GradientBoostingClassifier()
+# 100 0.025 -> 0.79097
+# 200 0.025 -> 0.78793
+# 50 0.025 -> 0.77016
+# 150 0.025 -> 0.79003
+# 125 0.025 -> 0.78957
+
+model = GradientBoostingClassifier(
+    n_estimators = 125,
+    learning_rate = 0.025
+)
 model.fit(input_df, target_df.to_numpy().ravel())
 print(model.score(input_df, target_df))
 

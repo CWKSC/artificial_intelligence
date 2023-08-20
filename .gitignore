@@ -157,3 +157,7 @@ cython_debug/
 **/catboost_info/
 **/vinai/
 kaggle/Store Sales - Time Series Forecasting/data/train.csv
+**/ted_hrlr_translate_pt_en_converter/
+**/ted_hrlr_translate_pt_en_converter.zip
+**/venv_tensorflow/
+
