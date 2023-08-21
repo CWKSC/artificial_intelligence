@@ -2,7 +2,7 @@
 import data_processing as dp
 dp.init(__file__)
 
-test_df = dp.read_csv('data/test')
+test_df = dp.read_csv('../data/test')
 
 dp.transform(
     test_df,

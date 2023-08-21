@@ -12,10 +12,12 @@ test_target_df = dp.read_csv("processed/test_target")
 # 50 0.025 -> 0.77016
 # 150 0.025 -> 0.79003
 # 125 0.025 -> 0.78957
+# 200 0.0001 -> 0.72433
+# 1000 0.01 -> 0.78536
 
 model = GradientBoostingClassifier(
-    n_estimators = 125,
-    learning_rate = 0.025
+    n_estimators = 1000,
+    learning_rate = 0.01
 )
 model.fit(input_df, target_df.to_numpy().ravel())
 print(model.score(input_df, target_df))

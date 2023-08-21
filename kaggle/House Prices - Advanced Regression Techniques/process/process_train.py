@@ -2,7 +2,7 @@
 import data_processing as dp
 dp.init(__file__)
 
-train_df = dp.read_csv('data/train')
+train_df = dp.read_csv('../data/train')
 
 dp.transform(
     train_df,

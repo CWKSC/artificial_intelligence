@@ -13,11 +13,16 @@ test_target_df = dp.read_csv("processed/test_target")
 # 1024 0.002 -> 2.63696
 # 1024 0.008 -> 1.65781
 # 1024 0.016 -> 1.54868
-# 1024 0.016 -> 1.59305
+# 2048 0.016 -> 1.59305
+# 2048 0.008 -> 1.55381
+# 1024 0.012 -> 1.54966
+# 512 0.012 -> 1.74035
+# 2048 0.012 -> 1.58512
+# 
 
 model = CatBoostRegressor(
     iterations=2048,
-    learning_rate=0.016,
+    learning_rate=0.012,
     verbose=10
 )
 model.fit(input_df, target_df.to_numpy().ravel())

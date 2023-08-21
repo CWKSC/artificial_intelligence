@@ -1,11 +1,11 @@
 {
     "python.analysis.extraPaths": [
-        "artificial_neural_network",
-        "classification",
-        "data_analysis",
-        "data_processing",
-        "regression",
-        "transformer"
+        "custom_library/artificial_neural_network",
+        "custom_library/classification",
+        "custom_library/data_analysis",
+        "custom_library/data_processing/src/data_processing",
+        "custom_library/regression",
+        "custom_library/transformer"
     ],
     "files.exclude": {
         "**/__pycache__": true,

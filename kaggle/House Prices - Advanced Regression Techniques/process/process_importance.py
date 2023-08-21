@@ -2,8 +2,8 @@ from catboost import CatBoostRegressor
 import data_processing as dp
 dp.init(__file__)
 
-train_input_df = dp.read_csv("processed/train_input")
-target_df = dp.read_csv("processed/train_target")
+train_input_df = dp.read_csv("../processed/train_input")
+target_df = dp.read_csv("../processed/train_target")
 
 model = CatBoostRegressor(
     iterations=10000,

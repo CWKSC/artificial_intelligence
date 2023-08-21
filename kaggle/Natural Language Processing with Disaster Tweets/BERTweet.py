@@ -164,12 +164,18 @@ tokenized_data['train'] = tokenized_data['train'].rename_column('target', 'label
 tokenized_data['val'] = tokenized_data['val'].rename_column('target', 'labels')
 tokenized_data.with_format('pt')
 
+# 3 0.00005 0.005 -> 0.8247
+# 1 0.0001 0 -> 0.82163
+# 1 0.0004 0 -> 0.57033
+# 1 0.004 0 -> 
+
+
 training_args = TrainingArguments(
     model_name,  
     evaluation_strategy = 'epoch',
-    num_train_epochs = 5,
-    learning_rate = 5e-5,
-    weight_decay = 0.005,
+    num_train_epochs = 1,
+    learning_rate = 0.004,
+    weight_decay = 0,
     per_device_train_batch_size = 16,
     per_device_eval_batch_size = 16,
     report_to = 'none',
@@ -206,4 +212,5 @@ preds = np.argmax(test_predictions.predictions, axis=1)
 submission = pd.DataFrame(list(zip(test_df.id, preds)), 
                           columns = ["id", "target"])
 dp.save_df_to_csv(submission, "submission/BERTweet")
+
 

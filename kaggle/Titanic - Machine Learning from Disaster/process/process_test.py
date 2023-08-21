@@ -1,7 +1,7 @@
 import data_processing as dp
 dp.init(__file__)
 
-test_input_df = dp.read_csv("data/test")
+test_input_df = dp.read_csv("./data/test")
 
 test_input_df['Title'] = test_input_df['Name'].apply(lambda x: x.split(',')[1].split('.')[0].strip())
 
