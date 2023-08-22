@@ -186,8 +186,9 @@ def analysis_train_test(
 
     analysis_df(data_df)
 
-    template_str = f"""import data_processing as dp
-import pandas as pd
+    template_str = f"""import pandas as pd
+import data_analysis as da
+import data_processing as dp
 dp.init(__file__)
 
 train_df = dp.read_csv('../data/train')
@@ -223,13 +224,15 @@ def process(df: pd.DataFrame) -> pd.DataFrame:
         template_str += message
 
     template_str += f"""    )
-    dp.transformAll(test_df, dp.Apply(float), except_columns = ['PassengerId'])
+    da.analysis_df(df)
+    dp.transformAll(df, dp.Apply(float), except_columns = ['{id_field}'])
     return df
 
 train_df = process(train_df)
 test_df = process(test_df)
 
 train_df.drop(columns=['{id_field}'], inplace=True)
+dp.save_df_to_csv(train_df, '../processed/train')
 train_target_df, train_input_df = dp.spilt_df(train_df, columns = ['{target_field}'])
 dp.save_df_to_csv(train_target_df, '../processed/train_target')
 dp.save_df_to_csv(train_input_df, '../processed/train_input')

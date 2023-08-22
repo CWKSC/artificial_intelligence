@@ -126,6 +126,7 @@ for (pt, en), en_labels in train_batches.take(1):
   break
 
 print(pt.shape)
+print(pt)
 print(en.shape)
 print(en_labels.shape)
 
@@ -265,7 +266,8 @@ transformer = Transformer(
     dff=dff,
     input_vocab_size=tokenizers.pt.get_vocab_size().numpy(),
     target_vocab_size=tokenizers.en.get_vocab_size().numpy(),
-    dropout_rate=dropout_rate)
+    dropout_rate=dropout_rate
+)
 
 output = transformer((pt, en))
 

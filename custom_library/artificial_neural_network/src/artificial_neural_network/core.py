@@ -5,8 +5,8 @@ import numpy
 import torch
 from tqdm import tqdm
 
-current_file_directory: Path = None
 device: str = None
+current_file_directory: Path = None
 
 def init(file_path: str):
     global current_file_directory
@@ -19,15 +19,17 @@ def init(file_path: str):
 
 def train(
     model: torch.nn.Module,
-    target_tensors: torch.Tensor, 
     input_tensors: torch.Tensor, 
+    target_tensors: torch.Tensor, 
     repeat: int = 10000,
     loss_fn = torch.nn.BCEWithLogitsLoss(), 
     optimizer = None,
     correct_func: Callable[[torch.Tensor, torch.Tensor], bool] = lambda pred, target: pred == target,
     save_mode: Union[Literal['accuracy'], Literal['loss'], None] = "accuracy",
     save_dir_path: str = 'model',
-    save_file_name: str = 'NN'
+    save_file_name: str = 'NN',
+    verbose: bool = True,
+    ctrl_c_skip: bool = True,
 ) -> None:
     try:
         if save_mode != None:
@@ -45,12 +47,13 @@ def train(
         tensor_len = len(target_tensors)
 
         for epoch in range(1, repeat + 1):
-            print(f'Epoch {epoch}')
+            if verbose:
+                print(f'Epoch {epoch}')
 
             total_loss = 0
             total_correct = 0
 
-            for target, input in tqdm(list(zip(target_tensors, input_tensors))):
+            for target, input in tqdm(list(zip(target_tensors, input_tensors)), disable = not verbose):
 
                 target = target.to(device)
                 input = input.to(device)
@@ -76,19 +79,22 @@ def train(
                 best_accuracy = accuracy
                 if save_mode == 'loss':
                     torch.save(model.state_dict(), directory / f'{save_file_name}.pt')
-
-            print(f"loss:     {total_loss:>7f}, best_loss: {best_loss:>7f}")
-            print(f"accuracy: {accuracy:>7f}, {total_correct} / {tensor_len}, best_accuracy: {best_accuracy:>7f}")
+            
+            if verbose:
+                print(f"loss:     {total_loss:>7f}, best_loss: {best_loss:>7f}")
+                print(f"accuracy: {accuracy:>7f}, {total_correct} / {tensor_len}, best_accuracy: {best_accuracy:>7f}")
     except KeyboardInterrupt:
-        pass
+        if not ctrl_c_skip:
+            raise KeyboardInterrupt
 
 def eval(
     model: torch.nn.Module,
+    input_tensors: torch.Tensor,
     target_tensors: torch.Tensor, 
-    input_tensors: torch.Tensor, 
     loss_fn = torch.nn.BCEWithLogitsLoss(), 
     optimizer = None,
-    correct_func: Callable[[torch.Tensor, torch.Tensor], bool] = lambda pred, target: pred == target
+    correct_func: Callable[[torch.Tensor, torch.Tensor], bool] = lambda pred, target: pred == target,
+    verbose: bool = True,
 ):
     if optimizer == None:
         optimizer = torch.optim.RAdam(model.parameters())
@@ -99,7 +105,7 @@ def eval(
     total_loss = 0
     total_correct = 0
     with torch.no_grad():
-        for target, input in tqdm(list(zip(target_tensors, input_tensors))):
+        for target, input in tqdm(list(zip(target_tensors, input_tensors)), disable = not verbose):
 
             target = target.to(device)
             input = input.to(device)
@@ -110,9 +116,12 @@ def eval(
             if not numpy.isnan(loss.item()):
                 total_loss += loss.item()
             total_correct += 1 if correct_func(predict, target) else 0
-        
-    print(f"loss: {total_loss:>7f} ")
-    print(f"accuracy: {total_correct / tensor_len}, {total_correct} / {tensor_len}")
+
+    accuracy = total_correct / tensor_len
+    if verbose:
+        print(f"loss: {total_loss:>7f} ")
+        print(f"accuracy: {accuracy}, {total_correct} / {tensor_len}")
+    return accuracy
 
 def predict(
     model: torch.nn.Module,

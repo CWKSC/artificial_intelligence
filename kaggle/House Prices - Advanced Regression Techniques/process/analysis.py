@@ -1,8 +1,7 @@
 import data_processing as dp
+import data_analysis as da
 dp.init(__file__)
 
-dp.analysis(dp.read_csv("data/train"))
-# dp.analysis(dp.read_csv("data/test"))
+da.analysis_train_test('../data', 'Id', 'SalePrice')
 
-# dp.analysis(dp.read_csv("processed/train_input"))
-# dp.analysis(dp.read_csv("processed/test_input"))
+da.analysis_df(dp.read_csv('../processed/train_input'))

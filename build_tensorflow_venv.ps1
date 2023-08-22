@@ -3,12 +3,16 @@ py -3.9 -m venv venv_tensorflow
 
 python -m pip install --upgrade pip
 
-./install_common.ps1
+pip install h5py
+pip install typing-extensions
+pip install wheel
 
-pip install tensorflow
-pip install protobuf
-pip install tensorflow_datasets
-pip install tensorflow-text
+pip uninstall -y -q tensorflow keras tensorflow-estimator tensorflow-text
+pip install protobuf~=3.20.3
+pip install -q tensorflow_datasets
+pip install -q -U tensorflow-text tensorflow
+
+# ./install_common.ps1
 
 ./install_custom_library.ps1
 

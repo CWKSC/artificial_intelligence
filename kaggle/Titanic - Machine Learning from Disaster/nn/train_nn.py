@@ -17,8 +17,8 @@ model = Model()
 
 ann.train(
     model,
-    target_tensors,
     input_tensors,
+    target_tensors,
     correct_func=ann.compare_float_true_false,
     save_file_name='NN'
 )

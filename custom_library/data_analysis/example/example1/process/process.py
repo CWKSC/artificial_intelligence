@@ -26,6 +26,7 @@ train_df = process(train_df)
 test_df = process(test_df)
 
 train_df.drop(columns=['PassengerId'], inplace=True)
+dp.save_df_to_csv(train_df, '../processed/train')
 train_target_df, train_input_df = dp.spilt_df(train_df, columns = ['Survived'])
 dp.save_df_to_csv(train_target_df, '../processed/train_target')
 dp.save_df_to_csv(train_input_df, '../processed/train_input')

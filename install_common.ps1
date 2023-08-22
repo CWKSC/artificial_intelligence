@@ -25,3 +25,5 @@ pip install xformers
 pip install datasets
 pip install evaluate
 
+pip install bayesian-optimization
+

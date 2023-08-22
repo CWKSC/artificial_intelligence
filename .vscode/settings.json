@@ -1,9 +1,11 @@
 {
     "python.analysis.extraPaths": [
-        "custom_library/artificial_neural_network",
+        "custom_library/artificial_neural_network/src",
         "custom_library/classification",
-        "custom_library/data_analysis",
-        "custom_library/data_processing/src/data_processing",
+        "custom_library/cross_validation/src",
+        "custom_library/data_analysis/src",
+        "custom_library/data_processing/src",
+        "custom_library/parameter_tuning/src",
         "custom_library/regression",
         "custom_library/transformer"
     ],

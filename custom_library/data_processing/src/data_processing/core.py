@@ -6,8 +6,6 @@ import numpy
 import pandas as pd
 import torch
 
-from .operation import Operation
-
 current_file_directory: Path = None
 
 
