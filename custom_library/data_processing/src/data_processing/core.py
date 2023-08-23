@@ -98,9 +98,11 @@ def analysis(dataframe: pd.DataFrame):
     
 
 
-def toTensors(dataframe: pd.DataFrame) -> torch.Tensor:
-    return torch.Tensor(dataframe.to_numpy())
+def df_to_2d_tensor(dataframe: pd.DataFrame) -> torch.Tensor:
+    return torch.tensor(dataframe.to_numpy(), dtype=torch.float32)
 
+def df_to_2d_list(df: pd.DataFrame) -> list:
+    return [df.iloc[i].tolist() for i in range(df.shape[0])]
 
 def spilt_df(dataframe: pd.DataFrame, columns: list[str] = []) -> tuple[ pd.DataFrame, pd.DataFrame]:
     df1 = dataframe[columns]

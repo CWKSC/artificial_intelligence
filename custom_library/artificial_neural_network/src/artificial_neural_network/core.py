@@ -25,7 +25,7 @@ def train(
     loss_fn = torch.nn.BCEWithLogitsLoss(), 
     optimizer = None,
     correct_func: Callable[[torch.Tensor, torch.Tensor], bool] = lambda pred, target: pred == target,
-    save_mode: Union[Literal['accuracy'], Literal['loss'], None] = "accuracy",
+    save_mode: list[Union[Literal['accuracy'], Literal['loss']]] = ['accuracy', 'loss'],
     save_dir_path: str = 'model',
     save_file_name: str = 'NN',
     verbose: bool = True,
@@ -71,14 +71,14 @@ def train(
             
             if total_loss < best_loss:
                 best_loss = total_loss
-                if save_mode == 'accuracy':
-                    torch.save(model.state_dict(), directory / f'{save_file_name}.pt')
+                if 'loss' in save_mode:
+                    torch.save(model.state_dict(), directory / f'{save_file_name}_loss.pt')
             
             accuracy = total_correct / tensor_len
             if accuracy > best_accuracy:
                 best_accuracy = accuracy
-                if save_mode == 'loss':
-                    torch.save(model.state_dict(), directory / f'{save_file_name}.pt')
+                if 'accuracy' in save_mode:
+                    torch.save(model.state_dict(), directory / f'{save_file_name}_accuracy.pt')
             
             if verbose:
                 print(f"loss:     {total_loss:>7f}, best_loss: {best_loss:>7f}")
@@ -155,3 +155,8 @@ def compare_float_isclose(pred, target):
     pred = pred.item()
     target = target.item()
     return numpy.isclose(pred, target)
+
+def compare_binary_true_false(pred, target):
+    pred = [1 if ele > 0.5 else 0 for ele in pred]
+    target = [1 if ele > 0.5 else 0 for ele in target]
+    return pred == target

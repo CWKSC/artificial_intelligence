@@ -1,10 +1,11 @@
 import data_processing as dp
+import data_analysis as da
 dp.init(__file__)
 
-# dp.analysis(dp.read_csv("data/train"))
-# dp.analysis(dp.read_csv("data/test"))
-dp.analysis(dp.read_csv("../data/stores"))
-dp.analysis(dp.read_csv("../data/transactions"))
+# da.analysis_train_test(
+#     data_dir_path = '../data',
+#     id_field = 'id',
+#     target_field = 'sales'
+# )
 
-# dp.analysis(dp.read_csv("processed/train"))
-# dp.analysis(dp.read_csv("processed/test"))
+da.analysis_df(dp.read_csv('../processed/train_input'))

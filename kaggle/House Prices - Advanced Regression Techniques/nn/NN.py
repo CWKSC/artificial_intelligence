@@ -7,7 +7,7 @@ ann.init(__file__)
 test_input_df = dp.read_csv("processed/test_input")
 test_target_df = dp.read_csv("processed/test_target")
 
-test_input_tensors = dp.toTensors(test_input_df).to(ann.device)
+test_input_tensors = dp.df_to_2d_tensor(test_input_df).to(ann.device)
 
 model = ann.load_model(Model(), 'model/NN')
 predictions = ann.predict(

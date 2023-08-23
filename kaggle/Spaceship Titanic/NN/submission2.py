@@ -10,7 +10,7 @@ ann.init(__file__)
 
 test_df = dp.read_csv("processed/test")
 result_df, test_df = dp.spilt_df(test_df, ['PassengerId'])
-test_tensors = dp.toTensors(test_df)
+test_tensors = dp.df_to_2d_tensor(test_df)
 
 model = ann.load_model(Model(), 'model/NN32')
 model_check = ann.load_model(Model(), 'model/NN32_check')

@@ -9,9 +9,9 @@ input_df = dp.read_csv("processed/train_input")
 test_input_df = dp.read_csv("processed/test_input")
 test_target_df = dp.read_csv("processed/test_target")
 
-target_tensors = dp.toTensors(target_df)
-input_tensors = dp.toTensors(input_df)
-test_input_tensors = dp.toTensors(test_input_df)
+target_tensors = dp.df_to_2d_tensor(target_df)
+input_tensors = dp.df_to_2d_tensor(input_df)
+test_input_tensors = dp.df_to_2d_tensor(test_input_df)
 
 model = Model()
 

@@ -95,4 +95,15 @@ class Standardize(Operation):
         mean = series.mean()
         std = series.std()
         print(f'Mean: {mean}, Std: {std}')
-        return (series - series.mean()) / series.std()
+        return (series - mean) / std
+
+class Normalize(Operation):
+    def __init__(self) -> None:
+        super().__init__()
+    def name(self) -> str:
+        return 'Normalize'
+    def operate(self, series: pd.Series) -> pd.Series:
+        min = series.min()
+        max = series.max()
+        print(f'Min: {min}, Max: {max}')
+        return (series - min) / (max - min)

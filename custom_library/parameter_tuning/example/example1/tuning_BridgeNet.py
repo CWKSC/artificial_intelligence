@@ -9,8 +9,8 @@ train_df = dp.read_csv('data/train')
 def fit_func(model, input, target):
     ann.train(
         model,
-        dp.toTensors(input),
-        dp.toTensors(target),
+        dp.df_to_2d_tensor(input),
+        dp.df_to_2d_tensor(target),
         repeat=32,
         correct_func = ann.compare_float_true_false,
         save_mode = None,
@@ -21,8 +21,8 @@ def fit_func(model, input, target):
 def score_func(model, input, target):
     return ann.eval(
         model,
-        dp.toTensors(input),
-        dp.toTensors(target),
+        dp.df_to_2d_tensor(input),
+        dp.df_to_2d_tensor(target),
         correct_func=ann.compare_float_true_false,
         verbose = False
     )
@@ -37,10 +37,10 @@ max_args = pt.bayesian_optimization_tuning(
     optimizer_init_points = 5,
     optimizer_n_iter = 1000,
 
-    cross_validation_mode = None,
+    cross_validation_mode = 'random_sample',
     k_fold_n = 3, 
-    random_sample_num = 3,
-    random_sample_valid_ratio = 0.9,
+    random_sample_num = 1,
+    random_sample_valid_ratio = 0.7,
 
     probe_params= {
         'num_neuron': 233,

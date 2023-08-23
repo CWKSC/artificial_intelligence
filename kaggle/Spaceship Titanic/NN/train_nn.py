@@ -13,9 +13,9 @@ test_df = dp.read_csv("processed/test")
 target_df, input_df = dp.spilt_df(train_df, ['Transported'])
 result_df, test_df = dp.spilt_df(test_df, ['PassengerId'])
 
-target_tensors = dp.toTensors(target_df)
-input_tensors = dp.toTensors(input_df)
-test_tensors = dp.toTensors(test_df)
+target_tensors = dp.df_to_2d_tensor(target_df)
+input_tensors = dp.df_to_2d_tensor(input_df)
+test_tensors = dp.df_to_2d_tensor(test_df)
 
 model = Model()
 
