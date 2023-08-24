@@ -1,4 +1,5 @@
 import data_processing as dp
+import data_analysis as da
 import pandas as pd
 dp.init(__file__)
 
@@ -18,24 +19,27 @@ def process(df: pd.DataFrame) -> pd.DataFrame:
 
     dp.transform(
         df,
-        ('HomePlanet'  , dp.FillNaWithMode(), dp.VocabEncode()),
-        ('CryoSleep'   , dp.FillNaWithMode(), dp.VocabEncode()),
+        ('HomePlanet'  , dp.FillNaWithMode(), dp.VocabEncode(), dp.Standardize(), dp.Normalize()),
+        ('CryoSleep'   , dp.FillNaWithMode(), dp.VocabEncode(), dp.Standardize(), dp.Normalize()),
         ('Cabin'       , dp.Drop()),
-        ('Destination' , dp.FillNaWithMode(), dp.VocabEncode()),
-        ('Age'         , dp.FillNaWithMean(), dp.Standardize()),
+        ('Destination' , dp.FillNaWithMode(), dp.VocabEncode(), dp.Standardize(), dp.Normalize()),
+        ('Age'         , dp.FillNaWithMean(), dp.Standardize(), dp.Normalize()),
         ('VIP'         , dp.FillNaWithMode(), dp.VocabEncode()),
-        ('RoomService' , dp.FillNaWithMean(), dp.Standardize()),
-        ('FoodCourt'   , dp.FillNaWithMean(), dp.Standardize()),
-        ('ShoppingMall', dp.FillNaWithMean(), dp.Standardize()),
-        ('Spa'         , dp.FillNaWithMean(), dp.Standardize()),
-        ('VRDeck'      , dp.FillNaWithMean(), dp.Standardize()),
+        ('RoomService' , dp.FillNaWithMean(), dp.Standardize(), dp.Normalize()),
+        ('FoodCourt'   , dp.FillNaWithMean(), dp.Standardize(), dp.Normalize()),
+        ('ShoppingMall', dp.FillNaWithMean(), dp.Standardize(), dp.Normalize()),
+        ('Spa'         , dp.FillNaWithMean(), dp.Standardize(), dp.Normalize()),
+        ('VRDeck'      , dp.FillNaWithMean(), dp.Standardize(), dp.Normalize()),
         ('Name'        , dp.Drop()),
-        ('Deck'          , dp.VocabEncode()),
-        ('CabinNumber'   , dp.VocabEncode()),
-        ('CabinPosition' , dp.VocabEncode()),
-        ('FirstName'     , dp.VocabEncode()),
-        ('LastName'      , dp.VocabEncode())
+        ('GroupId'     , dp.VocabEncode(), dp.Normalize()),
+        ('GroupSize'    , dp.Standardize(), dp.Normalize()),
+        ('Deck'          , dp.VocabEncode(), dp.Standardize(), dp.Normalize()),
+        ('CabinNumber'   , dp.VocabEncode(), dp.Standardize(), dp.Normalize()),
+        ('CabinPosition' , dp.VocabEncode(), dp.Standardize(), dp.Normalize()),
+        ('FirstName'     , dp.VocabEncode(), dp.Standardize(), dp.Normalize()),
+        ('LastName'      , dp.VocabEncode(), dp.Standardize(), dp.Normalize())
     )
+
     dp.transformAll(test_df, dp.Apply(float), except_columns = ['PassengerId'])
     return df
 
@@ -43,7 +47,11 @@ train_df = process(train_df)
 test_df = process(test_df)
 
 dp.transform(train_df, ('Transported', dp.Replace({'True': 1, 'False': 0})))
+da.analysis_df(train_df)
+da.analysis_df(test_df)
+
 train_df.drop(columns=['PassengerId'], inplace=True)
+dp.save_df_to_csv(train_df, '../processed/train')
 target_df, input_df = dp.spilt_df(train_df, columns = ['Transported'])
 dp.save_df_to_csv(target_df, '../processed/train_target')
 dp.save_df_to_csv(input_df, '../processed/train_input')

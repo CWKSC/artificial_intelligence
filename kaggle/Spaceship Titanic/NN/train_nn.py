@@ -1,30 +1,28 @@
-import torch
-from torch import nn
-import pandas as pd
 import data_processing as dp
 import artificial_neural_network as ann
-from Model import Model
+from artificial_neural_network import BridgeNet
 dp.init(__file__)
 ann.init(__file__)
 
-train_df = dp.read_csv("processed/train") 
-test_df = dp.read_csv("processed/test")
+input_df = dp.read_csv("../processed/train_input")
+target_df = dp.read_csv("../processed/train_target")
 
-target_df, input_df = dp.spilt_df(train_df, ['Transported'])
-result_df, test_df = dp.spilt_df(test_df, ['PassengerId'])
-
-target_tensors = dp.df_to_2d_tensor(target_df)
 input_tensors = dp.df_to_2d_tensor(input_df)
-test_tensors = dp.df_to_2d_tensor(test_df)
+target_tensors = dp.df_to_2d_tensor(target_df)
 
-model = Model()
+# 3 2 | 0.795928 | loss 0.79401
+# 4 2 | 0.792707 | loss 0.77858 | acc 
+# 
+
+model = BridgeNet(17, 1, 4, 2)
 
 ann.train(
     model,
-    target_tensors,
     input_tensors,
+    target_tensors,
+    repeat=200,
     correct_func=ann.compare_float_true_false,
-    save_file_name='NN32'
+    save_file_name='NN'
 )
 
 # predict_list = ann.predict(

@@ -20,7 +20,7 @@ print(test_target_df['Survived'].value_counts())
 dp.save_df_to_csv(test_target_df, '../submission/NN_loss')
 
 
-model = ann.load_model(BridgeNet(10, 1, 30, 7), 'model/NN_loss')
+model = ann.load_model(BridgeNet(10, 1, 30, 7), 'model/NN_accuracy')
 predictions = ann.predict(
     model,
     test_input_tensors

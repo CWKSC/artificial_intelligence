@@ -2,8 +2,8 @@ from catboost import CatBoostClassifier
 import data_processing as dp
 dp.init(__file__)
 
-target_df = dp.read_csv("processed/train_target")
 input_df = dp.read_csv("processed/train_input")
+target_df = dp.read_csv("processed/train_target")
 test_input_df = dp.read_csv("processed/test_input")
 test_target_df = dp.read_csv("processed/test_target")
 
