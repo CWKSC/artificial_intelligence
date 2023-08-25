@@ -10,7 +10,10 @@ test_target_df = dp.read_csv("../processed/test_target")
 test_input_tensors = dp.df_to_2d_tensor(test_input_df).to(ann.device)
 
 
-model = ann.load_model(BridgeNet(17, 1, 4, 2), 'model/NN_loss')
+num_neuron = 6
+num_layer = 2
+
+model = ann.load_model(BridgeNet(17, 1, num_neuron, num_layer), 'model/NN_loss')
 predict_list = ann.predict(
     model,
     test_input_tensors
@@ -21,7 +24,7 @@ print(test_target_df['Transported'].value_counts())
 dp.save_df_to_csv(test_target_df, '../submission/NN_loss')
 
 
-model = ann.load_model(BridgeNet(17, 1, 4, 2), 'model/NN_accuracy')
+model = ann.load_model(BridgeNet(17, 1, num_neuron, num_layer), 'model/NN_accuracy')
 predict_list = ann.predict(
     model,
     test_input_tensors

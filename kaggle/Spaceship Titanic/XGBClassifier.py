@@ -2,13 +2,15 @@ from xgboost import XGBClassifier
 import data_processing as dp
 dp.init(__file__)
 
-target_df = dp.read_csv("processed/train_target")
 input_df = dp.read_csv("processed/train_input")
+target_df = dp.read_csv("processed/train_target").to_numpy().ravel()
 test_input_df = dp.read_csv("processed/test_input")
 test_target_df = dp.read_csv("processed/test_target")
 
+# 0.7753
+
 model = XGBClassifier()
-model.fit(input_df, target_df.to_numpy().ravel())
+model.fit(input_df, target_df)
 print(model.score(input_df, target_df))
 
 predictions = model.predict(test_input_df)

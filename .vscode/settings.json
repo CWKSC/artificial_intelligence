@@ -1,13 +1,13 @@
 {
     "python.analysis.extraPaths": [
         "custom_library/artificial_neural_network/src",
-        "custom_library/classification",
+        "custom_library/classification/src",
         "custom_library/cross_validation/src",
         "custom_library/data_analysis/src",
         "custom_library/data_processing/src",
         "custom_library/parameter_tuning/src",
-        "custom_library/regression",
-        "custom_library/transformer"
+        "custom_library/regression/src",
+        "custom_library/transformer/src"
     ],
     "files.exclude": {
         "**/__pycache__": true,

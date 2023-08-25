@@ -7,9 +7,15 @@ target_df = dp.read_csv("processed/train_target").to_numpy().ravel()
 test_input_df = dp.read_csv("processed/test_input").to_numpy()
 test_target_df = dp.read_csv("processed/test_target")
 
+# 5 | 0.71358
+# 7 | 0.72924
+# 12 | 0.74
+# 16 | 
+# 32 | 
+# 64 | 0.74304
 
 model = KNeighborsClassifier(
-    n_neighbors = 5
+    n_neighbors = 32
 )
 model.fit(input_df, target_df)
 # print(model.score(input_df, target_df))

@@ -11,10 +11,12 @@ input_tensors = dp.df_to_2d_tensor(input_df)
 target_tensors = dp.df_to_2d_tensor(target_df)
 
 # 3 2 | 0.795928 | loss 0.79401
-# 4 2 | 0.792707 | loss 0.77858 | acc 
-# 
+# 4 2 | 0.792707 | acc 0.79354 loss 0.77858 
+# 6 2 82 | 0.779478 3489.563040 | acc 0.76408 loss 0.76268
+# 6 2 50 | 0.782009 3481.529834 | acc 0.78512 loss 0.78115
+# 512 2 51 | 0.813413 3268.533791 | acc loss
 
-model = BridgeNet(17, 1, 4, 2)
+model = BridgeNet(17, 1, 512, 2)
 
 ann.train(
     model,
