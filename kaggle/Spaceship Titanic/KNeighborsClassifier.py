@@ -13,9 +13,13 @@ test_target_df = dp.read_csv("processed/test_target")
 # 16 | 
 # 32 | 
 # 64 | 0.74304
+# 256 | 0.73649
+# 512 | 0.72691
+# 1024 | 0.7255
+# 2048 | 
 
 model = KNeighborsClassifier(
-    n_neighbors = 32
+    n_neighbors = 1024
 )
 model.fit(input_df, target_df)
 # print(model.score(input_df, target_df))

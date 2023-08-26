@@ -10,7 +10,7 @@ test_target_df = dp.read_csv("../processed/test_target")
 test_input_tensors = dp.df_to_2d_tensor(test_input_df).to(ann.device)
 
 num_neuron = 6
-num_layer = 2
+num_layer = 1
 
 model = ann.load_model(BridgeNet(10, 1, num_neuron, num_layer), 'model/NN_loss')
 predictions = ann.predict(

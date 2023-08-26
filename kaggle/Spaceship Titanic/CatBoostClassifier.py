@@ -30,13 +30,16 @@ test_target_df = dp.read_csv("processed/test_target")
 # 1216 0.01 -> 0.80219
 # 1088 0.01 -> 0.80266
 
-# 1024 0.005 ->
-# 1536 0.005 ->
-# 768 0.005 -> 
+# 1024 0.005 -> 0.79658
+# 1536 0.005 -> 0.79728
+# 768 0.005 -> 0.79728
+
+# 512 0.02 -> 0.79822
+# 1024 0.02 -> 0.79284
 
 model = CatBoostClassifier(
-    iterations = 1024,
-    learning_rate = 0.005,
+    iterations = 1088,
+    learning_rate = 0.01,
     verbose = 100
 )
 model.fit(input_df, target_df.to_numpy().ravel())

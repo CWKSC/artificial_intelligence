@@ -15,14 +15,15 @@ target_tensors = dp.df_to_2d_tensor(target_df)
 # 6 2 82 | 0.779478 3489.563040 | acc 0.76408 loss 0.76268
 # 6 2 50 | 0.782009 3481.529834 | acc 0.78512 loss 0.78115
 # 512 2 51 | 0.813413 3268.533791 | acc loss
+# 17 1 31 | 0.793972 3368.600885 | acc 0.77297
 
-model = BridgeNet(17, 1, 512, 2)
+model = BridgeNet(17, 1, 17, 1)
 
 ann.train(
     model,
     input_tensors,
     target_tensors,
-    repeat=200,
+    repeat=1000,
     correct_func=ann.compare_float_true_false,
     save_file_name='NN'
 )
