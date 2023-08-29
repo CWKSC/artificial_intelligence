@@ -39,5 +39,5 @@ print(model.score(input_df, target_df))
 predictions = model.predict(test_input_df)
 
 test_target_df['Survived'] = predictions.astype(int)
-print(test_target_df)
+print(test_target_df['Survived'].value_counts())
 dp.save_df_to_csv(test_target_df, "submission/CatBoostClassifier")
