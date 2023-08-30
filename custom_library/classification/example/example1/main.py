@@ -5,5 +5,5 @@ dp.init(__file__)
 
 train_df = dp.read_csv('data/train')
 
-result = cla.try_classifier(train_df, n = 30)
+result = cla.try_classifier(train_df, n = 100)
 print(result)

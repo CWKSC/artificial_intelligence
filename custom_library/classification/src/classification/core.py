@@ -9,7 +9,7 @@ import pandas as pd
 import cross_validation as cv
 
 common_classifiers = [
-    ('CatBoostClassifier', CatBoostClassifier(verbose=1000)),
+    ('CatBoostClassifier', CatBoostClassifier(verbose=False)),
     ('LGBMClassifier', LGBMClassifier(force_row_wise=True)),
     ('XGBClassifier', XGBClassifier()),
     ('XGBRFClassifier', XGBRFClassifier()),
@@ -20,22 +20,14 @@ common_classifiers = [
     ('AdaBoostClassifier', AdaBoostClassifier()),
     ('HistGradientBoostingClassifier', HistGradientBoostingClassifier()),
     ('ExtraTreesClassifier', ExtraTreesClassifier()),
-    ('KNeighborsClassifier n_neighbors = 1', KNeighborsClassifier(n_neighbors = 1)),
     ('KNeighborsClassifier n_neighbors = 2', KNeighborsClassifier(n_neighbors = 2)),
-    ('KNeighborsClassifier n_neighbors = 3', KNeighborsClassifier(n_neighbors = 3)),
     ('KNeighborsClassifier n_neighbors = 4', KNeighborsClassifier(n_neighbors = 4)),
-    ('KNeighborsClassifier n_neighbors = 5', KNeighborsClassifier(n_neighbors = 5)),
-    ('KNeighborsClassifier n_neighbors = 6', KNeighborsClassifier(n_neighbors = 6)),
-    ('KNeighborsClassifier n_neighbors = 7', KNeighborsClassifier(n_neighbors = 7)),
     ('KNeighborsClassifier n_neighbors = 8', KNeighborsClassifier(n_neighbors = 8)),
-    ('KNeighborsClassifier n_neighbors = 9', KNeighborsClassifier(n_neighbors = 9)),
-    ('KNeighborsClassifier n_neighbors = 10', KNeighborsClassifier(n_neighbors = 10)),
-    ('KNeighborsClassifier n_neighbors = 11', KNeighborsClassifier(n_neighbors = 11)),
-    ('KNeighborsClassifier n_neighbors = 12', KNeighborsClassifier(n_neighbors = 12)),
-    ('KNeighborsClassifier n_neighbors = 13', KNeighborsClassifier(n_neighbors = 13)),
-    ('KNeighborsClassifier n_neighbors = 14', KNeighborsClassifier(n_neighbors = 14)),
-    ('KNeighborsClassifier n_neighbors = 15', KNeighborsClassifier(n_neighbors = 15)),
     ('KNeighborsClassifier n_neighbors = 16', KNeighborsClassifier(n_neighbors = 16)),
+    ('KNeighborsClassifier n_neighbors = 32', KNeighborsClassifier(n_neighbors = 32)),
+    ('KNeighborsClassifier n_neighbors = 64', KNeighborsClassifier(n_neighbors = 64)),
+    ('KNeighborsClassifier n_neighbors = 128', KNeighborsClassifier(n_neighbors = 128)),
+    ('KNeighborsClassifier n_neighbors = 256', KNeighborsClassifier(n_neighbors = 256)),
 ]
 
 def try_classifier(
@@ -79,12 +71,15 @@ def try_classifier(
     names = []
     train_accuracy_mean = []
     valid_accuracy_mean = []
+    diff = []
     for name in result:
         names.append(name)
         train_accuracy_mean.append(result[name]['train_accuracy_mean'])
         valid_accuracy_mean.append(result[name]['valid_accuracy_mean'])
+        diff.append(result[name]['train_accuracy_mean'] - result[name]['valid_accuracy_mean'])
     result_df['classifier'] = names
     result_df['train_accuracy_mean'] = train_accuracy_mean
     result_df['valid_accuracy_mean'] = valid_accuracy_mean
+    result_df['diff'] = diff
 
     return result_df.sort_values(by=['valid_accuracy_mean'], ascending=False)
