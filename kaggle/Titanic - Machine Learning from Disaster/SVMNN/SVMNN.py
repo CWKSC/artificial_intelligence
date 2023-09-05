@@ -43,7 +43,7 @@ loss_fn = torch.nn.BCEWithLogitsLoss()
 optimizer = torch.optim.RAdam(model.parameters())
 for epoch in range(1, repeat + 1):
     print(f'Epoch {epoch}')
-
+ 
     total_loss = 0
     total_correct = 0
 
