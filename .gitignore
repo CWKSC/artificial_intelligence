@@ -160,4 +160,5 @@ kaggle/Store Sales - Time Series Forecasting/data/train.csv
 **/ted_hrlr_translate_pt_en_converter/
 **/ted_hrlr_translate_pt_en_converter.zip
 **/venv_tensorflow/
-
+**/venv_langchain/
+**/venv_huggingface/
