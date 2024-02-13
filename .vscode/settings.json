@@ -11,6 +11,11 @@
     ],
     "files.exclude": {
         "**/__pycache__": true,
-        "**/**.egg-info": true
+        "**/**.egg-info": true,
+        "catboost_info": true,
+        "**/venv**/": true,
+        ".gitattributes": true,
+        "LICENSE": true,
+        "**/activate.ps1": true
     }
 }
