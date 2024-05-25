@@ -1,5 +1,8 @@
 # artificial_intelligence
 
+> [!CAUTION]
+> This is no longer maintained and used, so I made it public
+
 ### Build venv
 
 ```powershell
